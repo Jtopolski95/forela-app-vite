@@ -34,4 +34,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
-          branch: gh-pages 
+          branch: gh-pages
+          force_orphan: true
+          clean: true
+          force: true 
