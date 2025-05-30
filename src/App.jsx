@@ -19,12 +19,21 @@ import { initialPennyUserData, pennyTomorrowScheduleData, pennyPersonalizedCareI
 import { pennyJournalEntriesData } from './data/journalEntries';
 import { initialAppSettings } from './data/userPreferences';
 import { initialChatSessionsData } from './data/chatSessions';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { JournalScreen } from './components/JournalScreen'
+import { ProfileScreen } from './components/ProfileScreen'
+import { SettingsScreen } from './components/SettingsScreen'
+import { Navigation } from './components/Navigation'
+import { Drawer } from './components/Drawer'
+import { Bars3Icon } from '@heroicons/react/24/outline'
 
 const AppContext = createContext();
 
 function App() {
-  const [view, setView] = useState('today');
+  const [currentScreen, setCurrentScreen] = useState('journal')
+  const [journalEntries, setJournalEntries] = useState([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [view, setView] = useState('today');
   const [currentSchedule, setCurrentSchedule] = useState(initialPennyUserData.scheduleToday);
   const [pageTitle, setPageTitle] = useState("Today's Personalized Care");
   const [personalizedCareIntro, setPersonalizedCareIntro] = useState(initialPennyUserData.personalizedCareIntroToday);
@@ -81,23 +90,56 @@ function App() {
 
   useEffect(() => { /* Tailwind config */ const head = document.head; const ids = ['forela-tailwind-config','forela-fonts','custom-scrollbar-style']; ids.forEach(id => { let el=document.getElementById(id); if(el)head.removeChild(el);}); const tw = document.createElement('script'); tw.id='forela-tailwind-config'; tw.text=`tailwind.config={theme:{extend:{colors:{brown:{50:'#FBF9F7',100:'#F5F1ED',200:'#EAE2DA',300:'#DED4CA',400:'#C4B2A6',600:'#6F5E53',700:'#54453B',800:'#3E322B'},forelaPink:'#D99C8F',forelaPinkLight:'#F6EAE7',forelaPinkText:'#8C5A51',forelaOrange:'#A36456',forelaOrangeLight:'#F0E2DF',forelaOrangeText:'#6D443A',forelaDarkBlue:'#082026',forelaDarkBlueLight:'#E6E8E9',forelaDarkBlueText:'#FFFFFF',forelaLightBlue:'#1E6E8B',forelaLightBlueLight:'#DAEBF0',forelaLightBlueText:'#104457',beigeTooltipBg:'#EAE9E5',forelaNavText:'#311D00',forelaHighlightBlue:'#1f6d8c'},fontFamily:{sans:['Inter','sans-serif'],serif:['Playfair Display','serif']},animation:{pulseSlow:'pulseSlow 2s cubic-bezier(0.4,0,0.6,1) infinite',recordSpin:'recordSpin 2s linear infinite'},keyframes:{pulseSlow:{'0%,100%':{opacity:1,transform:'scale(1)'},'50%':{opacity:0.7,transform:'scale(1.05)'}},recordSpin:{from:{transform:'rotate(0deg)'},to:{transform:'rotate(360deg)'}}}}}}`; const ff = document.createElement('link'); ff.id='forela-fonts'; ff.href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"; ff.rel="stylesheet"; const ss = document.createElement("style"); ss.id="custom-scrollbar-style"; ss.innerText=`.custom-scrollbar::-webkit-scrollbar{width:8px;}.custom-scrollbar::-webkit-scrollbar-track{background:#F5F1ED;border-radius:10px;}.custom-scrollbar::-webkit-scrollbar-thumb{background:#DED4CA;border-radius:10px;}.custom-scrollbar::-webkit-scrollbar-thumb:hover{background:#C4B2A6;}`; head.appendChild(tw); head.appendChild(ff); head.appendChild(ss); }, []);
 
+  const handleScreenChange = (screen) => {
+    setCurrentScreen(screen)
+  }
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
   return (
-    <AppContext.Provider value={{ userData: initialPennyUserData, updateActivityCompletion, appReplaceActivity, view, allJournalEntries, addJournalEntry, getScheduleForDate, getChatsForDate }}>
-      <div className="min-h-screen bg-brown-50 font-sans text-brown-700">
-        <DrawerMenu isOpen={isDrawerOpen} onClose={closeDrawer} navigateTo={navigateTo} selectedBottomNavIds={selectedBottomNavIds} toggleBottomNavItem={toggleBottomNavItem} />
-        <div className="max-w-2xl mx-auto pb-24">
-          {view === 'journal' ? ( <JournalScreen entries={allJournalEntries} openDrawer={openDrawer} addJournalEntry={addJournalEntry} getScheduleForDate={getScheduleForDate} getChatsForDate={getChatsForDate} /> )
-          : view === 'companion' ? ( <CompanionScreen openDrawer={openDrawer} allChatSessions={allChatSessions} currentChatSessionId={currentChatSessionId} setCurrentChatSessionId={setCurrentChatSessionId} addNewChatMessage={addNewChatMessage} startNewChatSession={startNewChatSession} /> )
-          : view === 'analytics' ? ( <AnalyticsScreen openDrawer={openDrawer} /> )
-          : view === 'settings' ? ( <SettingsScreen openDrawer={openDrawer} appSettings={appSettings} updateAppSetting={updateAppSettingState} userProfile={userProfile} updateUserProfile={updateUserProfileState} /> )
-          : view === 'symptoms' ? ( <SupportScreen openDrawer={openDrawer} /> ) 
-          : ( <> <DashboardHeader userName={userProfile.firstName} journalPrompt={journalPrompt} showJournalButton={showJournalButton} greeting={greeting} navigateToJournal={() => navigateTo('journal')} openDrawer={openDrawer} lessonOfTheDay={lessonOfTheDay} />
-                 <PersonalizedCare schedule={currentSchedule} pageTitle={pageTitle} personalizedCareIntro={personalizedCareIntro} view={view} handleViewToggle={handleDashboardViewToggle} onUpdateActivityCompletion={updateActivityCompletion} /> </>
-          )}
-        </div>
-        <BottomNav currentView={view} navigate={navigateTo} bottomNavItems={bottomNavConfig} setBottomNavItemsOrder={setBottomNavItemsOrderAndUpdateIds} isEditingNav={isEditingNav} setIsEditingNav={setIsEditingNav} />
+    <Router basename={'/forela-app-vite'}>
+      <div className="relative flex flex-col min-h-screen bg-background-gray">
+        {/* Header/Top Bar with Hamburger Menu */}
+        <header className="bg-white shadow-sm p-4 flex items-center justify-between">
+          <h1 className="text-xl font-display font-semibold text-text-primary">Forela</h1>
+          <button onClick={toggleDrawer} className="p-2 rounded-full hover:bg-gray-100">
+            <Bars3Icon className="w-6 h-6 text-gray-600" />
+          </button>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-grow p-4">
+          <Routes>
+            <Route path="/journal" element={<JournalScreen entries={journalEntries} addJournalEntry={addJournalEntry} />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/settings" element={<SettingsScreen />} />
+            {/* Add routes for other drawer items here */}
+            <Route path="/care-plan" element={<div>Care Plan Screen Placeholder</div>} />
+            <Route path="/labs" element={<div>Labs Screen Placeholder</div>} />
+            <Route path="/help" element={<div>Help Screen Placeholder</div>} />
+            <Route path="/refer-a-friend" element={<div>Refer a Friend Screen Placeholder</div>} />
+            <Route path="/companion" element={<div>Companion Screen Placeholder</div>} />
+            <Route path="/symptoms" element={<div>Symptoms Screen Placeholder</div>} />
+            <Route path="/trends" element={<div>Trends Screen Placeholder</div>} />
+            <Route path="/reports" element={<div>Reports Screen Placeholder</div>} />
+            <Route path="/medical-history" element={<div>Medical History Screen Placeholder</div>} />
+            <Route path="/integrations" element={<div>Integrations Screen Placeholder</div>} />
+            <Route path="/menu-scan" element={<div>Menu Scan Screen Placeholder</div>} />
+            {/* Default route */}
+            <Route path="*" element={<JournalScreen entries={journalEntries} addJournalEntry={addJournalEntry} />} />
+          </Routes>
+        </main>
+
+        {/* Bottom Navigation Bar */}
+        <Navigation currentScreen={currentScreen} onScreenChange={handleScreenChange} />
+
+        {/* Drawer Component */}
+        <Drawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
+
       </div>
-    </AppContext.Provider>
+    </Router>
   );
 }
 
