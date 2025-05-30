@@ -2,24 +2,21 @@ import React, { useState } from 'react';
 import { Menu as MenuIcon, Edit3, Mic, Type, Send } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 
-const JournalScreen = ({
+export function JournalScreen({
   entries,
-  openDrawer,
   addJournalEntry
-}) => {
-  const [isRecording, setIsRecording] = useState(false);
+}) {
   const [newEntry, setNewEntry] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newEntry.trim()) {
       addJournalEntry({
-        id: `entry_${Date.now()}`,
-        date: new Date().toISOString(),
-        title: newEntry.split('\n')[0],
+        id: Date.now(),
         content: newEntry,
-        mood: 'neutral'
+        timestamp: new Date().toISOString()
       });
       setNewEntry('');
       setIsTyping(false);
@@ -44,10 +41,8 @@ const JournalScreen = ({
     if (newEntry.trim()) {
       addJournalEntry({
         id: Date.now(),
-        date: new Date().toISOString(),
-        title: newEntry.split('\n')[0],
         content: newEntry,
-        mood: 'neutral'
+        timestamp: new Date().toISOString()
       });
       setNewEntry('');
       setIsTyping(false);
@@ -81,13 +76,13 @@ const JournalScreen = ({
           <div key={entry.id} className="card">
             <p className="text-text-primary whitespace-pre-wrap">{entry.content}</p>
             <p className="text-sm text-text-secondary mt-2">
-              {formatDate(entry.date)}
+              {formatDate(entry.timestamp)}
             </p>
           </div>
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default JournalScreen; 
