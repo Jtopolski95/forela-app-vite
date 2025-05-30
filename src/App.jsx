@@ -100,7 +100,7 @@ function App() {
 
   return (
     <Router basename={'/forela-app-vite'}>
-      <div className="relative flex flex-col min-h-screen bg-background-gray">
+      <div className="relative flex flex-col min-h-screen bg-background-beige">
         {/* Header/Top Bar with Hamburger Menu */}
         <header className="bg-white shadow-sm p-4 flex items-center justify-between">
           <h1 className="text-xl font-display font-semibold text-text-primary">Forela</h1>

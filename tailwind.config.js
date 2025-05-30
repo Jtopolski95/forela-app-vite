@@ -35,7 +35,8 @@ export default {
         background: {
           light: '#FFFFFF',
           dark: '#1F2933',
-          gray: '#F5F7FA'
+          gray: '#F5F7FA',
+          beige: '#EAE9E5'
         },
         // Text colors
         text: {
