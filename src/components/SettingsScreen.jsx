@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu as MenuIcon, User, Bell, MessageSquare, Smartphone } from 'lucide-react';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 const SettingsScreen = ({
   openDrawer,
@@ -10,12 +11,70 @@ const SettingsScreen = ({
 }) => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editedProfile, setEditedProfile] = useState(userProfile);
+  const [settings, setSettings] = useState({
+    notifications: true,
+    darkMode: false,
+    language: 'en'
+  });
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
     updateUserProfile(editedProfile);
     setIsEditingProfile(false);
   };
+
+  const handleToggle = (setting) => {
+    setSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
+  };
+
+  const settingsSections = [
+    {
+      title: 'Preferences',
+      items: [
+        {
+          id: 'notifications',
+          label: 'Push Notifications',
+          type: 'toggle',
+          value: settings.notifications
+        },
+        {
+          id: 'darkMode',
+          label: 'Dark Mode',
+          type: 'toggle',
+          value: settings.darkMode
+        }
+      ]
+    },
+    {
+      title: 'Account',
+      items: [
+        {
+          id: 'language',
+          label: 'Language',
+          type: 'select',
+          value: settings.language,
+          options: [
+            { value: 'en', label: 'English' },
+            { value: 'es', label: 'Spanish' },
+            { value: 'fr', label: 'French' }
+          ]
+        },
+        {
+          id: 'privacy',
+          label: 'Privacy Settings',
+          type: 'link'
+        },
+        {
+          id: 'help',
+          label: 'Help & Support',
+          type: 'link'
+        }
+      ]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -232,6 +291,54 @@ const SettingsScreen = ({
               </div>
             </div>
           </div>
+
+          {/* Settings Sections */}
+          {settingsSections.map((section) => (
+            <div key={section.title} className="card">
+              <h2 className="text-lg font-semibold text-text-primary mb-4">{section.title}</h2>
+              <div className="space-y-4">
+                {section.items.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between py-2">
+                    <span className="text-text-primary">{item.label}</span>
+                    {item.type === 'toggle' && (
+                      <button
+                        onClick={() => handleToggle(item.id)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          item.value ? 'bg-primary-500' : 'bg-gray-200'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            item.value ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    )}
+                    {item.type === 'select' && (
+                      <select
+                        value={item.value}
+                        onChange={(e) => setSettings(prev => ({ ...prev, [item.id]: e.target.value }))}
+                        className="input py-1"
+                      >
+                        {item.options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    {item.type === 'link' && (
+                      <ChevronRightIcon className="w-5 h-5 text-text-secondary" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <button className="btn btn-danger w-full">
+            Sign Out
+          </button>
         </div>
       </div>
     </div>

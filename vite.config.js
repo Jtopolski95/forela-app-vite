@@ -7,8 +7,8 @@ export default defineConfig({
   base: '/forela-app-vite/',
   build: {
     outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: true
+    sourcemap: true,
+    assetsDir: 'assets'
   },
   server: {
     port: 3000,
