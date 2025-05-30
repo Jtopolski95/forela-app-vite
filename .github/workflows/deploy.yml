@@ -35,6 +35,6 @@ jobs:
         with:
           folder: dist
           branch: gh-pages
-          force_orphan: true
+          single-commit: true
           clean: true
           force: true 
