@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Menu as MenuIcon, User, Bell, MessageSquare, Smartphone } from 'lucide-react';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
-const SettingsScreen = ({
+export function SettingsScreen({
   openDrawer,
   appSettings,
   updateAppSetting,
   userProfile,
   updateUserProfile
-}) => {
+}) {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editedProfile, setEditedProfile] = useState(userProfile);
   const [settings, setSettings] = useState({
@@ -343,6 +343,4 @@ const SettingsScreen = ({
       </div>
     </div>
   );
-};
-
-export default SettingsScreen; 
+} 
