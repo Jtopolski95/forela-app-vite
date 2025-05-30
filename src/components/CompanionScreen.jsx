@@ -5,7 +5,6 @@ const CompanionScreen = ({
   openDrawer,
   allChatSessions,
   currentChatSessionId,
-  setCurrentChatSessionId,
   addNewChatMessage,
   startNewChatSession
 }) => {

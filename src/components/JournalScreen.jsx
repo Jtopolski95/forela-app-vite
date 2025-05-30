@@ -4,9 +4,7 @@ import { Menu as MenuIcon, Edit3, Mic, Type, Send } from 'lucide-react';
 const JournalScreen = ({
   entries,
   openDrawer,
-  addJournalEntry,
-  getScheduleForDate,
-  getChatsForDate
+  addJournalEntry
 }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [newEntry, setNewEntry] = useState('');

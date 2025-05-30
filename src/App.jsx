@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import {
     ChevronDown, ChevronUp, RefreshCw, X, Home, Edit3, Smile, Moon, Utensils, Bike,
     CheckSquare, Square, Mic, Type, Search, Menu as MenuIcon, BookOpen, MessageCircleQuestion,
@@ -15,55 +15,12 @@ import {
     X as CloseIcon
 } from 'lucide-react';
 import './App.css'
+import { initialPennyUserData, pennyTomorrowScheduleData, pennyPersonalizedCareIntroTomorrow, pennyJournalPromptTomorrow, defaultBottomNavItems, allSelectableNavItems } from './data/pennyData';
+import { pennyJournalEntriesData } from './data/journalEntries';
+import { initialAppSettings } from './data/userPreferences';
+import { initialChatSessionsData } from './data/chatSessions';
 
 const AppContext = createContext();
-
-// --- Penny's Mock Data ---
-const initialPennyUserData = {
-  firstName: 'Penny',
-  lastName: 'Lane',
-  middleName: '',
-  email: 'penny.lane@example.com',
-  dob: '1985-07-15',
-  personalizedCareIntroToday: "Penny, with your packed schedule, today's plan focuses on quick, nourishing meals and short, effective exercises and mindfulness moments. Let's make every minute count for your well-being.",
-  journalPromptToday: "Even with a hectic day, what's one small way you can prioritize your well-being for a few minutes?",
-  lessonOfTheDay: {
-    text: "Taking just 5 minutes for deep breathing can significantly reduce stress, improve mood, and lower blood pressure. It's a small investment with big returns for your busy life.",
-    affirmation: "I am capable, I am strong, and I make time for what matters.",
-    image: "https://placehold.co/600x150/A0D2DB/FFFFFF?text=Calm+Forest+Path",
-  },
-  scheduleToday: { 
-    meals: {
-      title: 'Quick Meals', icon: <Utensils size={20} />, colorClass: 'bg-forelaPink', textColorClass: 'text-forelaPinkText', bgColorLightClass: 'bg-forelaPinkLight', colorHex: '#D99C8F', baseColorName: 'forelaPink',
-      items: [ 
-          { id: 'pm1', time: '7am', name: 'Overnight Oats with Berries & Nuts', image: 'https://placehold.co/100x100/F6EAE7/8C5A51?text=Oats', completed: true, type: 'food' }, 
-          {id: 'pm2', time: '12pm', name: 'Leftover Chicken Salad Lettuce Wraps', image: 'https://placehold.co/100x100/F6EAE7/8C5A51?text=Salad', completed: false, type: 'food'},
-          {id: 'pm3', time: '6pm', name: 'Sheet Pan Salmon & Asparagus', image: 'https://placehold.co/100x100/F6EAE7/8C5A51?text=Salmon', completed: false, type: 'food'}
-      ],
-    },
-    movement: {
-      title: 'Quick Movement', icon: <Bike size={20} />, colorClass: 'bg-forelaOrange', textColorClass: 'text-forelaOrangeText', bgColorLightClass: 'bg-forelaOrangeLight', colorHex: '#A36456', baseColorName: 'forelaOrange',
-      items: [ 
-          { id: 'pmv1', time: '6:30am', name: '15min HIIT Workout Video', image: 'https://placehold.co/100x100/F0E2DF/6D443A?text=HIIT', completed: true, durationOptions: ['10m', '15m', '20m'] },
-          { id: 'pmv2', time: '3pm', name: '5min Desk Stretches', image: 'https://placehold.co/100x100/F0E2DF/6D443A?text=Stretch', completed: false, durationOptions: ['3m', '5m', '7m'] } 
-      ],
-    },
-    mentalHealth: {
-      title: 'Mindful Moments', icon: <Smile size={20} />, colorClass: 'bg-forelaDarkBlue', textColorClass: 'text-forelaDarkBlueText', bgColorLightClass: 'bg-forelaDarkBlueLight', colorHex: '#082026', baseColorName: 'forelaDarkBlue',
-      items: [ 
-          { id: 'pmh1', time: 'Commute', name: '3min Guided Breathing (Audio)', image: 'https://placehold.co/100x100/E6E8E9/082026?text=Breath', completed: false, durationOptions: ['3m', '5m'], activityOptions: ['Breathing', 'Quick Scan'] },
-          { id: 'pmh2', time: 'Evening', name: '5min Gratitude Reflection', image: 'https://placehold.co/100x100/E6E8E9/082026?text=Gratitude', completed: false, durationOptions: ['3m', '5m'], activityOptions: ['Gratitude', 'Reflection'] } 
-      ],
-    },
-     sleep: { 
-      title: 'Sleep Prep', icon: <Moon size={20} />, colorClass: 'bg-forelaLightBlue', textColorClass: 'text-forelaLightBlueText', bgColorLightClass: 'bg-forelaLightBlueLight', colorHex: '#1E6E8B', baseColorName: 'forelaLightBlue',
-      items: [ 
-          { id: 'ps1', time: '9:30pm', name: 'Set out clothes for tomorrow.', image: 'https://placehold.co/100x100/DAEBF0/104457?text=Prep', completed: false, type: 'recommendation' },
-          { id: 'ps2', time: '10:00pm', name: 'Read a book for 15min (no screens).', image: 'https://placehold.co/100x100/DAEBF0/104457?text=Read', completed: false, type: 'recommendation' }
-      ],
-    },
-  }
-};
 
 function App() {
   const [view, setView] = useState('today');

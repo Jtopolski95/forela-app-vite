@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Home, MessageSquare, BarChart2, Settings, User, ChevronRight } from 'lucide-react';
 
-const DrawerMenu = ({ isOpen, onClose, navigateTo, selectedBottomNavIds, toggleBottomNavItem }) => {
+const DrawerMenu = ({ isOpen, onClose, navigateTo }) => {
   const menuItems = [
     { id: 'today', label: 'Today', icon: <Home size={24} />, viewId: 'today' },
     { id: 'journal', label: 'Journal', icon: <MessageSquare size={24} />, viewId: 'journal' },

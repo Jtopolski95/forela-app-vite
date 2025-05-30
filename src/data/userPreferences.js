@@ -24,4 +24,6 @@ export const initialUserPreferences = {
   },
   language: 'en',
   timezone: 'America/New_York'
-}; 
+};
+
+export const initialAppSettings = initialUserPreferences; 
