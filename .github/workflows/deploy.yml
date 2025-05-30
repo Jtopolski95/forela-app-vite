@@ -26,6 +26,10 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: List dist directory
+        run: |-
+          ls -R dist
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
